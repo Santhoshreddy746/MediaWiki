@@ -33,7 +33,7 @@ az vm create \
     --generate-ssh-keys
 
 # Open port 80 to allow web traffic to host.
-az vm open-port --port 80 --resource-group MediaWiki --name mwVM
+az vm open-port --port 22 --resource-group MediaWiki --name mwVM
 
 
 # Use CustomScript extension to install NGINX.
