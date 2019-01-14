@@ -1,3 +1,9 @@
+
+sudo rm /var/lib/dpkg/lock-frontend
+
+sudo rm /var/lib/dpkg/lock
+
+sudo dpkg --configure -a
 sudo apt -y update
 
 
