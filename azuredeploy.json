@@ -2,10 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "extensions_CustomScript_fileUris": {
-            "defaultValue": null,
-            "type": "Array"
-        },
         "extensions_CustomScript_storageAccountName": {
             "defaultValue": null,
             "type": "SecureString"
@@ -18,77 +14,97 @@
             "defaultValue": null,
             "type": "SecureString"
         },
-        "virtualMachines_mwVM_name": {
-            "defaultValue": "mwVM",
+        "virtualMachines_testVM_name": {
+            "defaultValue": "testVM",
             "type": "String"
         },
-        "virtualNetworks_mwVnet_name": {
-            "defaultValue": "mwVnet",
+        "storageAccounts_testmwacc_name": {
+            "defaultValue": "testmwacc",
             "type": "String"
         },
-        "networkInterfaces_mwNic_name": {
-            "defaultValue": "mwNic",
+        "networkInterfaces_testvm328_name": {
+            "defaultValue": "testvm328",
             "type": "String"
         },
-        "publicIPAddresses_mwPublicIP_name": {
-            "defaultValue": "mwPublicIP",
+        "publicIPAddresses_testVM_ip_name": {
+            "defaultValue": "testVM-ip",
             "type": "String"
         },
-        "subnets_mwSubnet_name": {
-            "defaultValue": "mwSubnet",
+        "networkSecurityGroups_testVM_nsg_name": {
+            "defaultValue": "testVM-nsg",
             "type": "String"
         },
-        "networkSecurityGroups_mwNetworkSecurityGroup_name": {
-            "defaultValue": "mwNetworkSecurityGroup",
+        "storageAccounts_cs7e07f114e77edx48f0xb9e_name": {
+            "defaultValue": "cs7e07f114e77edx48f0xb9e",
             "type": "String"
         },
         "extensions_CustomScript_name": {
             "defaultValue": "CustomScript",
             "type": "String"
         },
-        "securityRules_open_port_80_name": {
-            "defaultValue": "open-port-80",
+        "securityRules_SSH_name": {
+            "defaultValue": "SSH",
             "type": "String"
         },
-        "virtualMachines_mwVM_id": {
-            "defaultValue": "/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/MediaWiki/providers/Microsoft.Compute/disks/mwVM_disk1_b71e529d0f3b4e9a828c502b57d5096c",
+        "securityRules_RDP_name": {
+            "defaultValue": "RDP",
+            "type": "String"
+        },
+        "securityRules_HTTP_name": {
+            "defaultValue": "HTTP",
+            "type": "String"
+        },
+        "securityRules_HTTPS_name": {
+            "defaultValue": "HTTPS",
+            "type": "String"
+        },
+        "virtualNetworks_cloud_shell_storage_southcentralus_vnet_name": {
+            "defaultValue": "cloud-shell-storage-southcentralus-vnet",
+            "type": "String"
+        },
+        "subnets_default_name": {
+            "defaultValue": "default",
+            "type": "String"
+        },
+        "virtualMachines_testVM_id": {
+            "defaultValue": "/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/cloud-shell-storage-southcentralus/providers/Microsoft.Compute/disks/testVM_disk1_acc8430aadf24451a10aec21f7d4aaf5",
             "type": "String"
         }
     },
     "variables": {},
     "resources": [
         {
-            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/MediaWiki/providers/Microsoft.Compute/virtualMachines/mwVM'.",
+            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/cloud-shell-storage-southcentralus/providers/Microsoft.Compute/virtualMachines/testVM'.",
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[parameters('virtualMachines_mwVM_name')]",
+            "name": "[parameters('virtualMachines_testVM_name')]",
             "apiVersion": "2018-06-01",
-            "location": "eastus",
+            "location": "centralus",
             "tags": {},
             "scale": null,
             "properties": {
                 "hardwareProfile": {
-                    "vmSize": "Standard_DS1_v2"
+                    "vmSize": "Standard_D2s_v3"
                 },
                 "storageProfile": {
                     "imageReference": {
                         "publisher": "Canonical",
                         "offer": "UbuntuServer",
-                        "sku": "16.04-LTS",
+                        "sku": "18.04-LTS",
                         "version": "latest"
                     },
                     "osDisk": {
                         "osType": "Linux",
-                        "name": "[concat(parameters('virtualMachines_mwVM_name'),'_disk1_b71e529d0f3b4e9a828c502b57d5096c')]",
+                        "name": "[concat(parameters('virtualMachines_testVM_name'),'_disk1_acc8430aadf24451a10aec21f7d4aaf5')]",
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
-                            "id": "[parameters('virtualMachines_mwVM_id')]"
+                            "id": "[parameters('virtualMachines_testVM_id')]"
                         }
                     },
                     "dataDisks": []
                 },
                 "osProfile": {
-                    "computerName": "[parameters('virtualMachines_mwVM_name')]",
+                    "computerName": "[parameters('virtualMachines_testVM_name')]",
                     "adminUsername": "azureuser",
                     "linuxConfiguration": {
                         "disablePasswordAuthentication": false,
@@ -100,41 +116,46 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_mwNic_name'))]",
-                            "properties": {
-                                "primary": true
-                            }
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_testvm328_name'))]"
                         }
                     ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat('https', '://', parameters('storageAccounts_testmwacc_name'), '.blob.core.windows.net', '/')]"
+                    }
                 }
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_mwNic_name'))]"
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_testvm328_name'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_testmwacc_name'))]"
             ]
         },
         {
-            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/MediaWiki/providers/Microsoft.Network/networkInterfaces/mwNic'.",
+            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/cloud-shell-storage-southcentralus/providers/Microsoft.Network/networkInterfaces/testvm328'.",
             "type": "Microsoft.Network/networkInterfaces",
-            "name": "[parameters('networkInterfaces_mwNic_name')]",
+            "name": "[parameters('networkInterfaces_testvm328_name')]",
             "apiVersion": "2018-10-01",
-            "location": "eastus",
+            "location": "centralus",
+            "tags": {},
             "scale": null,
             "properties": {
                 "provisioningState": "Succeeded",
-                "resourceGuid": "b8fd7dd7-76ae-4ebf-bac5-61e43ab2632f",
+                "resourceGuid": "6b5b471c-51ff-4ce7-a409-49b28c2259f0",
                 "ipConfigurations": [
                     {
                         "name": "ipconfig1",
-                        "etag": "W/\"ece36f22-2ea9-4448-aeeb-c79743ecf247\"",
+                        "etag": "W/\"88a0490f-bc8c-45c6-bc1d-8e42cab049d0\"",
                         "properties": {
                             "provisioningState": "Succeeded",
-                            "privateIPAddress": "10.0.0.4",
+                            "privateIPAddress": "10.1.0.4",
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_mwPublicIP_name'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_testVM_ip_name'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_mwVnet_name'), parameters('subnets_mwSubnet_name'))]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_cloud_shell_storage_southcentralus_vnet_name'), parameters('subnets_default_name'))]"
                             },
                             "primary": true,
                             "privateIPAddressVersion": "IPv4"
@@ -145,44 +166,102 @@
                     "dnsServers": [],
                     "appliedDnsServers": []
                 },
-                "macAddress": "00-0D-3A-1A-A3-09",
+                "macAddress": "00-0D-3A-90-7D-8B",
                 "enableAcceleratedNetworking": false,
                 "enableIPForwarding": false,
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_mwNetworkSecurityGroup_name'))]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_testVM_nsg_name'))]"
                 },
                 "primary": true,
                 "tapConfigurations": []
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_mwPublicIP_name'))]",
-                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_mwVnet_name'), parameters('subnets_mwSubnet_name'))]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_mwNetworkSecurityGroup_name'))]"
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_testVM_ip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_cloud_shell_storage_southcentralus_vnet_name'), parameters('subnets_default_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_testVM_nsg_name'))]"
             ]
         },
         {
-            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/MediaWiki/providers/Microsoft.Network/networkSecurityGroups/mwNetworkSecurityGroup'.",
+            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/cloud-shell-storage-southcentralus/providers/Microsoft.Network/networkSecurityGroups/testVM-nsg'.",
             "type": "Microsoft.Network/networkSecurityGroups",
-            "name": "[parameters('networkSecurityGroups_mwNetworkSecurityGroup_name')]",
+            "name": "[parameters('networkSecurityGroups_testVM_nsg_name')]",
             "apiVersion": "2018-10-01",
-            "location": "eastus",
+            "location": "centralus",
+            "tags": {},
             "scale": null,
             "properties": {
                 "provisioningState": "Succeeded",
-                "resourceGuid": "7596f892-a173-42f9-b4eb-7f2a5cdfd5df",
+                "resourceGuid": "cfc52148-bb10-4a37-857a-e2a1d480d96f",
                 "securityRules": [
                     {
-                        "name": "open-port-80",
-                        "etag": "W/\"12cbaa55-a87e-4c78-ba31-1de115aafc12\"",
+                        "name": "HTTP",
+                        "etag": "W/\"a07985d4-eb39-4d99-b089-86c20a9457e6\"",
                         "properties": {
                             "provisioningState": "Succeeded",
-                            "protocol": "*",
+                            "protocol": "TCP",
                             "sourcePortRange": "*",
                             "destinationPortRange": "80",
                             "sourceAddressPrefix": "*",
                             "destinationAddressPrefix": "*",
                             "access": "Allow",
-                            "priority": 900,
+                            "priority": 300,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "HTTPS",
+                        "etag": "W/\"a07985d4-eb39-4d99-b089-86c20a9457e6\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "443",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 320,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "SSH",
+                        "etag": "W/\"a07985d4-eb39-4d99-b089-86c20a9457e6\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 340,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "RDP",
+                        "etag": "W/\"a07985d4-eb39-4d99-b089-86c20a9457e6\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "3389",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 360,
                             "direction": "Inbound",
                             "sourcePortRanges": [],
                             "destinationPortRanges": [],
@@ -194,7 +273,7 @@
                 "defaultSecurityRules": [
                     {
                         "name": "AllowVnetInBound",
-                        "etag": "W/\"12cbaa55-a87e-4c78-ba31-1de115aafc12\"",
+                        "etag": "W/\"a07985d4-eb39-4d99-b089-86c20a9457e6\"",
                         "properties": {
                             "provisioningState": "Succeeded",
                             "description": "Allow inbound traffic from all VMs in VNET",
@@ -214,7 +293,7 @@
                     },
                     {
                         "name": "AllowAzureLoadBalancerInBound",
-                        "etag": "W/\"12cbaa55-a87e-4c78-ba31-1de115aafc12\"",
+                        "etag": "W/\"a07985d4-eb39-4d99-b089-86c20a9457e6\"",
                         "properties": {
                             "provisioningState": "Succeeded",
                             "description": "Allow inbound traffic from azure load balancer",
@@ -234,7 +313,7 @@
                     },
                     {
                         "name": "DenyAllInBound",
-                        "etag": "W/\"12cbaa55-a87e-4c78-ba31-1de115aafc12\"",
+                        "etag": "W/\"a07985d4-eb39-4d99-b089-86c20a9457e6\"",
                         "properties": {
                             "provisioningState": "Succeeded",
                             "description": "Deny all inbound traffic",
@@ -254,7 +333,7 @@
                     },
                     {
                         "name": "AllowVnetOutBound",
-                        "etag": "W/\"12cbaa55-a87e-4c78-ba31-1de115aafc12\"",
+                        "etag": "W/\"a07985d4-eb39-4d99-b089-86c20a9457e6\"",
                         "properties": {
                             "provisioningState": "Succeeded",
                             "description": "Allow outbound traffic from all VMs to all VMs in VNET",
@@ -274,7 +353,7 @@
                     },
                     {
                         "name": "AllowInternetOutBound",
-                        "etag": "W/\"12cbaa55-a87e-4c78-ba31-1de115aafc12\"",
+                        "etag": "W/\"a07985d4-eb39-4d99-b089-86c20a9457e6\"",
                         "properties": {
                             "provisioningState": "Succeeded",
                             "description": "Allow outbound traffic from all VMs to Internet",
@@ -294,7 +373,7 @@
                     },
                     {
                         "name": "DenyAllOutBound",
-                        "etag": "W/\"12cbaa55-a87e-4c78-ba31-1de115aafc12\"",
+                        "etag": "W/\"a07985d4-eb39-4d99-b089-86c20a9457e6\"",
                         "properties": {
                             "provisioningState": "Succeeded",
                             "description": "Deny all outbound traffic",
@@ -317,19 +396,20 @@
             "dependsOn": []
         },
         {
-            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/MediaWiki/providers/Microsoft.Network/publicIPAddresses/mwPublicIP'.",
+            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/cloud-shell-storage-southcentralus/providers/Microsoft.Network/publicIPAddresses/testVM-ip'.",
             "type": "Microsoft.Network/publicIPAddresses",
             "sku": {
                 "name": "Basic",
                 "tier": "Regional"
             },
-            "name": "[parameters('publicIPAddresses_mwPublicIP_name')]",
+            "name": "[parameters('publicIPAddresses_testVM_ip_name')]",
             "apiVersion": "2018-10-01",
-            "location": "eastus",
+            "location": "centralus",
+            "tags": {},
             "scale": null,
             "properties": {
                 "provisioningState": "Succeeded",
-                "resourceGuid": "b97485cb-1d70-4665-815a-f82ab281c7b4",
+                "resourceGuid": "161dfe0d-dcd7-4f16-aa68-d1fbf7181b88",
                 "publicIPAddressVersion": "IPv4",
                 "publicIPAllocationMethod": "Dynamic",
                 "idleTimeoutInMinutes": 4,
@@ -338,31 +418,28 @@
             "dependsOn": []
         },
         {
-            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/MediaWiki/providers/Microsoft.Network/virtualNetworks/mwVnet'.",
+            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/cloud-shell-storage-southcentralus/providers/Microsoft.Network/virtualNetworks/cloud-shell-storage-southcentralus-vnet'.",
             "type": "Microsoft.Network/virtualNetworks",
-            "name": "[parameters('virtualNetworks_mwVnet_name')]",
+            "name": "[parameters('virtualNetworks_cloud_shell_storage_southcentralus_vnet_name')]",
             "apiVersion": "2018-10-01",
-            "location": "eastus",
+            "location": "centralus",
             "tags": {},
             "scale": null,
             "properties": {
                 "provisioningState": "Succeeded",
-                "resourceGuid": "bb344f79-f112-4026-8019-5481666d2400",
+                "resourceGuid": "897c63fe-a18c-4f21-b794-f555133311e1",
                 "addressSpace": {
                     "addressPrefixes": [
-                        "10.0.0.0/16"
+                        "10.1.0.0/24"
                     ]
-                },
-                "dhcpOptions": {
-                    "dnsServers": []
                 },
                 "subnets": [
                     {
-                        "name": "mwSubnet",
-                        "etag": "W/\"110a6922-4382-495b-96fc-9d16a0a83c43\"",
+                        "name": "default",
+                        "etag": "W/\"d4a110c1-0903-415e-b96e-85fa37e013ea\"",
                         "properties": {
                             "provisioningState": "Succeeded",
-                            "addressPrefix": "10.0.0.0/24",
+                            "addressPrefix": "10.1.0.0/24",
                             "delegations": []
                         }
                     }
@@ -374,16 +451,90 @@
             "dependsOn": []
         },
         {
-            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/MediaWiki/providers/Microsoft.Compute/virtualMachines/mwVM/extensions/CustomScript'.",
+            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/cloud-shell-storage-southcentralus/providers/Microsoft.Storage/storageAccounts/cs7e07f114e77edx48f0xb9e'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_cs7e07f114e77edx48f0xb9e_name')]",
+            "apiVersion": "2018-07-01",
+            "location": "southcentralus",
+            "tags": {
+                "ms-resource-usage": "azure-cloud-shell"
+            },
+            "scale": null,
+            "properties": {
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "enabled": true
+                        },
+                        "blob": {
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/cloud-shell-storage-southcentralus/providers/Microsoft.Storage/storageAccounts/testmwacc'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_testmwacc_name')]",
+            "apiVersion": "2018-07-01",
+            "location": "centralus",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": false,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "enabled": true
+                        },
+                        "blob": {
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/cloud-shell-storage-southcentralus/providers/Microsoft.Compute/virtualMachines/testVM/extensions/CustomScript'.",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(parameters('virtualMachines_mwVM_name'), '/', parameters('extensions_CustomScript_name'))]",
+            "name": "[concat(parameters('virtualMachines_testVM_name'), '/', parameters('extensions_CustomScript_name'))]",
             "apiVersion": "2018-06-01",
-            "location": "eastus",
+            "location": "centralus",
             "scale": null,
             "properties": {
                 "autoUpgradeMinorVersion": true,
                 "settings": {
-                    "fileUris": "[parameters('extensions_CustomScript_fileUris')]"
+                    "fileUris": [
+                        "https://raw.githubusercontent.com/Santhoshreddy746/MediaWiki/master/install_mediawiki.sh"
+                    ]
                 },
                 "publisher": "Microsoft.Azure.Extensions",
                 "type": "[parameters('extensions_CustomScript_name')]",
@@ -395,24 +546,24 @@
                 }
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_mwVM_name'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_testVM_name'))]"
             ]
         },
         {
-            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/MediaWiki/providers/Microsoft.Network/networkSecurityGroups/mwNetworkSecurityGroup/securityRules/open-port-80'.",
+            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/cloud-shell-storage-southcentralus/providers/Microsoft.Network/networkSecurityGroups/testVM-nsg/securityRules/HTTP'.",
             "type": "Microsoft.Network/networkSecurityGroups/securityRules",
-            "name": "[concat(parameters('networkSecurityGroups_mwNetworkSecurityGroup_name'), '/', parameters('securityRules_open_port_80_name'))]",
+            "name": "[concat(parameters('networkSecurityGroups_testVM_nsg_name'), '/', parameters('securityRules_HTTP_name'))]",
             "apiVersion": "2018-10-01",
             "scale": null,
             "properties": {
                 "provisioningState": "Succeeded",
-                "protocol": "*",
+                "protocol": "TCP",
                 "sourcePortRange": "*",
                 "destinationPortRange": "80",
                 "sourceAddressPrefix": "*",
                 "destinationAddressPrefix": "*",
                 "access": "Allow",
-                "priority": 900,
+                "priority": 300,
                 "direction": "Inbound",
                 "sourcePortRanges": [],
                 "destinationPortRanges": [],
@@ -420,22 +571,97 @@
                 "destinationAddressPrefixes": []
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_mwNetworkSecurityGroup_name'))]"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_testVM_nsg_name'))]"
             ]
         },
         {
-            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/MediaWiki/providers/Microsoft.Network/virtualNetworks/mwVnet/subnets/mwSubnet'.",
-            "type": "Microsoft.Network/virtualNetworks/subnets",
-            "name": "[concat(parameters('virtualNetworks_mwVnet_name'), '/', parameters('subnets_mwSubnet_name'))]",
+            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/cloud-shell-storage-southcentralus/providers/Microsoft.Network/networkSecurityGroups/testVM-nsg/securityRules/HTTPS'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat(parameters('networkSecurityGroups_testVM_nsg_name'), '/', parameters('securityRules_HTTPS_name'))]",
             "apiVersion": "2018-10-01",
             "scale": null,
             "properties": {
                 "provisioningState": "Succeeded",
-                "addressPrefix": "10.0.0.0/24",
+                "protocol": "TCP",
+                "sourcePortRange": "*",
+                "destinationPortRange": "443",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 320,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_testVM_nsg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/cloud-shell-storage-southcentralus/providers/Microsoft.Network/networkSecurityGroups/testVM-nsg/securityRules/SSH'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat(parameters('networkSecurityGroups_testVM_nsg_name'), '/', parameters('securityRules_SSH_name'))]",
+            "apiVersion": "2018-10-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "protocol": "TCP",
+                "sourcePortRange": "*",
+                "destinationPortRange": "22",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 340,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_testVM_nsg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/cloud-shell-storage-southcentralus/providers/Microsoft.Network/networkSecurityGroups/testVM-nsg/securityRules/RDP'.",
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "name": "[concat(parameters('networkSecurityGroups_testVM_nsg_name'), '/', parameters('securityRules_RDP_name'))]",
+            "apiVersion": "2018-10-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "protocol": "TCP",
+                "sourcePortRange": "*",
+                "destinationPortRange": "3389",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 360,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_testVM_nsg_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/e07f114e-77ed-48f0-b9e5-4cbda1d84545/resourceGroups/cloud-shell-storage-southcentralus/providers/Microsoft.Network/virtualNetworks/cloud-shell-storage-southcentralus-vnet/subnets/default'.",
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "name": "[concat(parameters('virtualNetworks_cloud_shell_storage_southcentralus_vnet_name'), '/', parameters('subnets_default_name'))]",
+            "apiVersion": "2018-10-01",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "addressPrefix": "10.1.0.0/24",
                 "delegations": []
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_mwVnet_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_cloud_shell_storage_southcentralus_vnet_name'))]"
             ]
         }
     ]
