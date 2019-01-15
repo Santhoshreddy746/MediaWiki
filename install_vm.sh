@@ -12,6 +12,9 @@ az network public-ip create --resource-group MediaWiki --name mwPublicIP
 # Create a network security group.
 az network nsg create --resource-group MediaWiki --name mwNetworkSecurityGroup
 
+# Create a storage account.
+az storage account create --name mwStorageAccount --resource-group MediaWiki
+
 # Create a virtual network card and associate with public IP address and NSG.
 az network nic create \
   --resource-group MediaWiki \
@@ -27,16 +30,20 @@ az vm create \
     --name mwVM \
     --location eastus \
     --nics mwNic \
+    --storage-account mwst\
     --image UbuntuLTS \
     --admin-username azureuser \
     --admin-password Azure@123456 \
     --generate-ssh-keys
 
-# Open port 80 to allow web traffic to host.
-az vm open-port --port 22 --resource-group MediaWiki --name mwVM
+# Open ports to allow web traffic to host.
+az vm open-port --port 22 --resource-group MediaWiki --name mwVM --priority 300
+az vm open-port --port 80 --resource-group MediaWiki --name mwVM --priority 320
+az vm open-port --port 3389 --resource-group MediaWiki --name mwVM --priority 340
+az vm open-port --port 443 --resource-group MediaWiki --name mwVM --priority 360
 
 
-# Use CustomScript extension to install NGINX.
+# Use CustomScript extension to install MediaWiki.
 az vm extension set \
   --publisher Microsoft.Azure.Extensions \
   --version 2.0 \
